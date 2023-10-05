@@ -1,18 +1,17 @@
 version: '3.8'
-
 services:
   php-fpm:
-    container_name: php-container-siwar
+    container_name: php-container
     restart: always
     build:
       context: ./docker/php-fpm
     volumes:
       - ./:/var/www/html
     networks:
-      vpcbrsiwar:
-        ipv4_address: 10.5.1.5
+      vpcbr:
+        ipv4_address: 10.5.0.5
   nginx:
-    container_name: nginx-container-siwar
+    container_name: nginx-container
     restart: always
     build:
       context: ./docker/nginx
@@ -24,15 +23,15 @@ services:
     depends_on:
       - php-fpm
     ports:
-      - "8282:80"
+      - "8181:80"
     networks:
-      vpcbrsiwar:
-        ipv4_address: 10.5.1.6
+      vpcbr:
+        ipv4_address: 10.5.0.6
   mysql:
     image: mysql:8
-    container_name: mysql-container-siwar
+    container_name: mysql-container
     ports:
-      - "3305:3305"
+      - "3306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -41,19 +40,19 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_PASSWORD: root
     networks:
-      vpcbrsiwar:
-        ipv4_address: 10.5.1.7
+      vpcbr:
+        ipv4_address: 10.5.0.7
   phpmyadmin:
-    container_name: phpmyadmin-container-siwar
+    container_name: phpmyadmin-container
     image: phpmyadmin
     restart: always
     ports:
-      - "8181:80"
+      - "8081:80"
     environment:
       - PMA_ARBITRARY=1
     networks:
-      vpcbrsiwar:
-        ipv4_address: 10.5.1.8
+      vpcbr:
+        ipv4_address: 10.5.0.8
     depends_on:
       - php-fpm
       - mysql
@@ -79,8 +78,8 @@ volumes:
   ###< doctrine/doctrine-bundle ###
   database:
 networks:
-  vpcbrsiwar:
+  vpcbr:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.5.1.0/16
+        - subnet: 10.5.0.0/16
