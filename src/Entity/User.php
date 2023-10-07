@@ -12,20 +12,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    #[ORM\Column(type: 'string',length: 255, nullable: true)]
+    private $email;
 
-    #[ORM\Column]
-    private array $roles = [];
+    #[ORM\Column(type: 'array')]
+    private $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
+    #[ORM\Column(type: 'string',length: 255, nullable: true)]
+    private $password;
+
+    #[ORM\Column(type: 'string',length: 255, nullable: true)]
+    private $firstName;
+
+    #[ORM\Column(type: 'string',length: 255, nullable: true)]
+    private $lastName;
+
+    #[ORM\Column(type: 'boolean', options:["default"=>false])]
+    private $isEnabled;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $createdAt;
+
+
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->isEnabled = true;
+    }
 
     public function getId(): ?int
     {
@@ -37,26 +54,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -66,24 +70,69 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
+    public function setRoles($roles) {
         $this->roles = $roles;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): string
+    public function getFirstName(): ?string
     {
-        return $this->password;
+        return $this->firstName;
     }
 
-    public function setPassword(string $password): static
+    public function setFirstName(string $firstName): self
     {
-        $this->password = $password;
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): self
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getIsEnabled(): ?bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(bool $isEnabled): self
+    {
+        $this->isEnabled = $isEnabled;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -95,5 +144,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }
